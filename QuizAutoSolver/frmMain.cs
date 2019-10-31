@@ -72,32 +72,18 @@ namespace QuizAutoSolver
 
             foreach (string text in Environment.GetCommandLineArgs())
             {
-                if (text.Substring(1, text.Length - 1) == "startup")
-                {
-                    Startup = true;
-                }
+                Startup = text.Substring(1, text.Length - 1) == "startup" ? true : false;
             }
         }
 
         int cboMainKeyToInt(string MainKey)
         {
-            switch (MainKey)
-            {
-                case "Alt":
-                    return 1;
-                case "Ctrl":
-                    return 2;
-                case "Shift":
-                    return 4;
-                case "WinKey":
-                    return 8;
-            }
-            return 0;
+            return MainKey == "Alt" ? 1 : MainKey == "Ctrl" ? 2 : MainKey == "Shift" ? 4 : MainKey == "WinKey" ? 8 : 0;
         }
 
         string GetQuestion(string path_read)
         {
-            const Int32 BufferSize = 128;
+            const int BufferSize = 128;
             string UsefulLine = null;
             int UsefulLineInt = -1;
             using (var fileStream = File.OpenRead(path_read))
@@ -139,13 +125,8 @@ namespace QuizAutoSolver
         string ToMask(string Shorthand)
         {
             int num_SH;
-            string mask = null;
-            int[] num = new int[4];
-            for (int i = 0; i < 4; i++)
-            {
-                num[i] = 0;
-            }
-            Int32.TryParse(Shorthand, out num_SH);
+            int[] num = { 0, 0, 0, 0 };
+            int.TryParse(Shorthand, out num_SH);
             int cnt = 0;
             while (num_SH >= 8)
             {
@@ -153,41 +134,15 @@ namespace QuizAutoSolver
                 num_SH -= 8;
                 cnt++;
             }
-            //si poteva fare un simpatica funzione ricorsiva ma così è più leggibile
-            switch (num_SH)
-            {
-                case 0:
-                    num[cnt] = 0;
-                    break;
-                case 1:
-                    num[cnt] = 128;
-                    break;
-                case 2:
-                    num[cnt] = 192;
-                    break;
-                case 3:
-                    num[cnt] = 224;
-                    break;
-                case 4:
-                    num[cnt] = 240;
-                    break;
-                case 5:
-                    num[cnt] = 248;
-                    break;
-                case 6:
-                    num[cnt] = 252;
-                    break;
-                case 7:
-                    num[cnt] = 254;
-                    break;
-            }
-            mask = num[0] + "." + num[1] + "." + num[2] + "." + num[3];
-            return mask;
+            
+            num[cnt] = num_SH == 0 ? 0 : num_SH == 1 ? 128 : num_SH == 2 ? 192 : num_SH == 3 ? 224 : num_SH == 4 ? 240 : num_SH == 5 ? 248 : num_SH == 6 ? 252 : 254;
+
+            return num[0] + "." + num[1] + "." + num[2] + "." + num[3];
         }
 
         string ToBin(string input)
         {
-            return String.Join(".", (input.Split('.').Select(x => Convert.ToString(Int32.Parse(x), 2).PadLeft(8, '0'))).ToArray());
+            return string.Join(".", (input.Split('.').Select(x => Convert.ToString(int.Parse(x), 2).PadLeft(8, '0'))).ToArray());
         }
 
         string ToDec(string input)
@@ -202,42 +157,21 @@ namespace QuizAutoSolver
 
         string DefaultMask(string ip)
         {
-            string defaultMask = null;
             string BinIP = ToBin(ip);
-
-            if (BinIP.Substring(0, 3) == "110")
-            {
-                defaultMask = "255.255.255.0";
-            }
-            else
-            if (BinIP.Substring(0, 2) == "10")
-            {
-                defaultMask = "255.255.0.0";
-            }
-            else
-            if (BinIP.Substring(0, 1) == "0")
-            {
-                defaultMask = "255.0.0.0";
-            }
-            return defaultMask;
+            return BinIP.Substring(0, 3) == "110" ? "255.255.255.0" : BinIP.Substring(0, 2) == "10" ? "255.255.0.0" : BinIP.Substring(0, 1) == "0" ? "255.0.0.0" : null;
         }
 
         string AndInBin(string ip, string mask)
         {
             StringBuilder BinAnd = new StringBuilder("00000000.00000000.00000000.00000000");
-            string Bin;
             string BinIp = ToBin(ip);
             string BinMask = ToBin(mask);
 
             for (int j = 0; j < BinIp.Length; j++)
             {
-                if (BinIp[j] == '1' && BinMask[j] == '1')
-                {
-                    BinAnd[j] = '1';
-                }
+                BinAnd[j] = BinIp[j] == '1' && BinMask[j] == '1' ? '1' : '0';
             }
-            Bin = ToDec(BinAnd.ToString());
-            return Bin;
+            return ToDec(BinAnd.ToString());
         }
 
         string FirstHost(string ip, string mask)
@@ -249,10 +183,7 @@ namespace QuizAutoSolver
 
             for (int j = 0; j < BinIp.Length; j++)
             {
-                if (BinIp[j] == '1' && BinMask[j] == '1')
-                {
-                    BinAnd[j] = '1';
-                }
+                BinAnd[j] = BinIp[j] == '1' && BinMask[j] == '1' ? '1' : '0';
             }
             Bin = ToDec(BinAnd.ToString());
 
@@ -262,8 +193,7 @@ namespace QuizAutoSolver
             {
                 if (Bin[j] == '.')
                 {
-                    cnt++;
-                    if (cnt == 3)
+                    if (++cnt == 3)
                     {
                         int.TryParse(Bin.Substring(j + 1, Bin.Length - j - 1), out value);
 
@@ -285,8 +215,7 @@ namespace QuizAutoSolver
             {
                 if (Bin[j] == '.')
                 {
-                    cnt++;
-                    if (cnt == 3)
+                    if (++cnt == 3)
                     {
                         int.TryParse(Bin.Substring(j + 1, Bin.Length - j - 1), out value);
 
@@ -302,32 +231,19 @@ namespace QuizAutoSolver
         string Broadcast(string ip, string mask)
         {
             StringBuilder BinAnd = new StringBuilder("00000000.00000000.00000000.00000000");
-            string Bin;
             string BinIp = ToBin(ip);
             string BinMask = ToBin(mask);
             int cnt0mask = 0;
 
             for (int j = 0; j < BinIp.Length; j++)
             {
-                if (BinIp[j] == '1' && BinMask[j] == '1')
-                {
-                    BinAnd[j] = '1';
-                }
+                BinAnd[j] = BinIp[j] == '1' && BinMask[j] == '1' ? '1' : '0';
                 if (BinMask[j] == '1')
                 {
                     cnt0mask++;
-                    if (cnt0mask == 8)
-                    {
-                        cnt0mask++;
-                    }
-                    if (cnt0mask == 17)
-                    {
-                        cnt0mask++;
-                    }
-                    if (cnt0mask == 26)
-                    {
-                        cnt0mask++;
-                    }
+                    cnt0mask += cnt0mask == 8 ? 1 : 0;
+                    cnt0mask += cnt0mask == 17 ? 1 : 0;
+                    cnt0mask += cnt0mask == 26 ? 1 : 0;
                 }
             }
 
@@ -340,9 +256,7 @@ namespace QuizAutoSolver
             BinAnd[17] = '.';
             BinAnd[26] = '.';
 
-            Bin = ToDec(BinAnd.ToString());
-
-            return Bin;
+            return ToDec(BinAnd.ToString());
         }
 
         string QuantitaHost(string mask)
@@ -351,10 +265,7 @@ namespace QuizAutoSolver
             string BinMask = ToBin(mask);
             for (int i = 0; i < BinMask.Length; i++)
             {
-                if (BinMask[i] == '1')
-                {
-                    cnt++;
-                }
+                cnt += BinMask[i] == '1' ? 1 : 0;
             }
             cnt = 32 - cnt;
             return (Math.Pow(2.0, cnt) - 2).ToString();
@@ -362,7 +273,6 @@ namespace QuizAutoSolver
 
         void Reply(string question)
         {
-
             if (question.Length < 67)
             {
                 //FATTO
@@ -397,19 +307,11 @@ namespace QuizAutoSolver
                             string BinMask = ToBin(mask);
                             string BinDefaultMask = ToBin(DefaultMask(ip));
 
-                            int cnt;
-                            int cnt_bin1 = 0;
-                            int cnt_bin2 = 0;
+                            int cnt, cnt_bin1 = 0, cnt_bin2 = 0;
                             for (int j = 0; j < BinMask.Length; j++)
                             {
-                                if (BinMask[j] == '1')
-                                {
-                                    cnt_bin1++;
-                                }
-                                if (BinDefaultMask[j] == '1')
-                                {
-                                    cnt_bin2++;
-                                }
+                                cnt_bin1 += BinMask[j] == '1' ? 1 : 0;
+                                cnt_bin2 += BinDefaultMask[j] == '1' ? 1 : 0;
                             }
                             cnt = cnt_bin1 - cnt_bin2;
                             cnt = (int)Math.Pow(2.0, cnt);
@@ -495,20 +397,13 @@ namespace QuizAutoSolver
             if (question.Substring(0, 43) == "Inserisci l'indirizzo di broadcast dell'IP ")
             {
                 string rimanente = question.Substring(43, question.Length - 43);
-                for (int i = 0; i < rimanente.Length; i++)
+                for (int i = 0; i < rimanente.Length - 14; i++)
                 {
-                    try
+                    if (rimanente.Substring(i, 14) == " con maschera ")
                     {
-                        if (rimanente.Substring(i, 14) == " con maschera ")
-                        {
-                            string ip = rimanente.Substring(0, i);
-                            string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
-                            Clipboard.SetText(Broadcast(ip, mask));
-                        }
-                    }
-                    catch
-                    {
-
+                        string ip = rimanente.Substring(0, i);
+                        string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
+                        Clipboard.SetText(Broadcast(ip, mask));
                     }
                 }
             }
@@ -519,39 +414,24 @@ namespace QuizAutoSolver
                 if (question.Substring(0, 39) == "Quante subnet puoi ottenere dalla rete ")
                 {
                     string rimanente = question.Substring(39, question.Length - 39);
-                    for (int i = 0; i < rimanente.Length; i++)
+                    for (int i = 0; i < rimanente.Length-14; i++)
                     {
-                        try
+                        if (rimanente.Substring(i, 14) == " con maschera ")
                         {
-                            if (rimanente.Substring(i, 14) == " con maschera ")
+                            string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 15);
+                            string ip = rimanente.Substring(0, i);
+                            string BinMask = ToBin(mask);
+                            string BinDefaultMask = ToBin(DefaultMask(ip));
+
+                            int cnt, cnt_bin1 = 0, cnt_bin2 = 0;
+                            for (int j = 0; j < BinMask.Length; j++)
                             {
-                                string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 15);
-                                string ip = rimanente.Substring(0, i);
-                                string BinMask = ToBin(mask);
-                                string BinDefaultMask = ToBin(DefaultMask(ip));
-
-                                int cnt;
-                                int cnt_bin1 = 0;
-                                int cnt_bin2 = 0;
-                                for (int j = 0; j < BinMask.Length; j++)
-                                {
-                                    if (BinMask[j] == '1')
-                                    {
-                                        cnt_bin1++;
-                                    }
-                                    if (BinDefaultMask[j] == '1')
-                                    {
-                                        cnt_bin2++;
-                                    }
-                                }
-                                cnt = cnt_bin1 - cnt_bin2;
-                                cnt = (int)Math.Pow(2.0, cnt);
-                                Clipboard.SetText(cnt.ToString());
+                                cnt_bin1 += BinMask[j] == '1' ? 1 : 0;
+                                cnt_bin2 += BinDefaultMask[j] == '1' ? 1 : 0;
                             }
-                        }
-                        catch
-                        {
-
+                            cnt = cnt_bin1 - cnt_bin2;
+                            cnt = (int)Math.Pow(2.0, cnt);
+                            Clipboard.SetText(cnt.ToString());
                         }
                     }
                 }
@@ -560,21 +440,14 @@ namespace QuizAutoSolver
                 if (question.Substring(0, 33) == "Quanti host ci sono nella subnet ")
                 {
                     string rimanente = question.Substring(33, question.Length - 33);
-                    for (int i = 0; i < rimanente.Length; i++)
+                    for (int i = 0; i < rimanente.Length-14; i++)
                     {
-                        try
+                        if (rimanente.Substring(i, 14) == " con maschera ")
                         {
-                            if (rimanente.Substring(i, 14) == " con maschera ")
-                            {
-                                string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 15);
-                                string ip = rimanente.Substring(0, i);
-                                string quantitahost = QuantitaHost(mask);
-                                Clipboard.SetText(quantitahost);
-                            }
-                        }
-                        catch
-                        {
-
+                            string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 15);
+                            string ip = rimanente.Substring(0, i);
+                            string quantitahost = QuantitaHost(mask);
+                            Clipboard.SetText(quantitahost);
                         }
                     }
                 }
@@ -583,7 +456,7 @@ namespace QuizAutoSolver
                 if (question.Substring(0, 42) == "Inserisci l'ultimo host valido della rete " && question.Length < 87)
                 {
                     string rimanente = question.Substring(42, question.Length - 42);
-                    for (int i = 0; i < rimanente.Length; i++)
+                    for (int i = 0; i < rimanente.Length - 14; i++)
                     {
                         try
                         {
@@ -605,21 +478,14 @@ namespace QuizAutoSolver
                 if (question.Substring(0, 42) == "Inserisci il primo host valido della rete " && question.Length < 87)
                 {
                     string rimanente = question.Substring(42, question.Length - 42);
-                    for (int i = 0; i < rimanente.Length; i++)
+                    for (int i = 0; i < rimanente.Length - 14; i++)
                     {
-                        try
+                        if (rimanente.Substring(i, 14) == " con maschera ")
                         {
-                            if (rimanente.Substring(i, 14) == " con maschera ")
-                            {
-                                string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
-                                string ip = rimanente.Substring(0, i);
+                            string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
+                            string ip = rimanente.Substring(0, i);
 
-                                Clipboard.SetText(FirstHost(ip, mask));
-                            }
-                        }
-                        catch
-                        {
-
+                            Clipboard.SetText(FirstHost(ip, mask));
                         }
                     }
                 }
@@ -627,20 +493,11 @@ namespace QuizAutoSolver
                 if (question.Substring(0, 47) == "Quante subnet USABILI puoi ottenere dalla rete ")
                 {
                     string rimanente = question.Substring(47, question.Length - 47);
-                    for (int i = 0; i < rimanente.Length; i++)
+                    for (int i = 0; i < rimanente.Length - 14; i++)
                     {
-                        try
+                        if (rimanente.Substring(i, 14) == " con maschera ")
                         {
-                            if (rimanente.Substring(i, 14) == " con maschera ")
-                            {
-                                MessageBox.Show("mask = " + rimanente.Substring(i + 14, (rimanente.Length - i) - 15)
-                                    + "\n" + "ip = " + rimanente.Substring(0, i)
-                                    );
-                            }
-                        }
-                        catch
-                        {
-
+                            MessageBox.Show("mask = " + rimanente.Substring(i + 14, (rimanente.Length - i) - 15) + "\n" + "ip = " + rimanente.Substring(0, i));
                         }
                     }
                 }
@@ -652,10 +509,7 @@ namespace QuizAutoSolver
                     int cnt_bin = 0;
                     for (int i = 0; i < binary.Length; i++)
                     {
-                        if (binary[i] == '1')
-                        {
-                            cnt_bin++;
-                        }
+                        cnt_bin += binary[i] == '1' ? 1 : 0;
                     }
 
                     Clipboard.SetText(cnt_bin.ToString());
@@ -795,21 +649,14 @@ namespace QuizAutoSolver
             if (question.Substring(0, 64) == "Inserisci l'indirizzo della subnet alla quale appartiene l'host ")
             {
                 string rimanente = question.Substring(71, question.Length - 71);
-                for (int i = 0; i < rimanente.Length; i++)
+                for (int i = 0; i < rimanente.Length-14; i++)
                 {
-                    try
+                    if (rimanente.Substring(i, 14) == " con maschera ")
                     {
-                        if (rimanente.Substring(i, 14) == " con maschera ")
-                        {
-                            string mask = rimanente.Substring(i + 14 + 1, (rimanente.Length - i) - 15);
-                            string ip = rimanente.Substring(0, i);
+                        string mask = rimanente.Substring(i + 14 + 1, (rimanente.Length - i) - 15);
+                        string ip = rimanente.Substring(0, i);
 
-                            Clipboard.SetText(AndInBin(ip, mask));
-                        }
-                    }
-                    catch
-                    {
-
+                        Clipboard.SetText(AndInBin(ip, mask));
                     }
                 }
             }
@@ -818,20 +665,13 @@ namespace QuizAutoSolver
             if (question.Substring(0, 69) == "Inserisci l'indirizzo della subnet alla quale appartiene l'indirizzo ")
             {
                 string rimanente = question.Substring(69, question.Length - 69);
-                for (int i = 0; i < rimanente.Length; i++)
+                for (int i = 0; i < rimanente.Length-14; i++)
                 {
-                    try
+                    if (rimanente.Substring(i, 14) == " con maschera ")
                     {
-                        if (rimanente.Substring(i, 14) == " con maschera ")
-                        {
-                            string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
-                            string ip = rimanente.Substring(0, i);
-                            Clipboard.SetText(AndInBin(ip, mask));
-                        }
-                    }
-                    catch
-                    {
-
+                        string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
+                        string ip = rimanente.Substring(0, i);
+                        Clipboard.SetText(AndInBin(ip, mask));
                     }
                 }
             }
@@ -840,21 +680,14 @@ namespace QuizAutoSolver
             if (question.Substring(0, 71) == "Inserisci il primo host valido della rete alla quale appartiene l'host ")
             {
                 string rimanente = question.Substring(71, question.Length - 71);
-                for (int i = 0; i < rimanente.Length; i++)
+                for (int i = 0; i < rimanente.Length-14; i++)
                 {
-                    try
+                    if (rimanente.Substring(i, 14) == " con maschera ")
                     {
-                        if (rimanente.Substring(i, 14) == " con maschera ")
-                        {
-                            string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
-                            string ip = rimanente.Substring(0, i);
+                        string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
+                        string ip = rimanente.Substring(0, i);
 
-                            Clipboard.SetText(FirstHost(ip, mask));
-                        }
-                    }
-                    catch
-                    {
-
+                        Clipboard.SetText(FirstHost(ip, mask));
                     }
                 }
             }
@@ -885,21 +718,14 @@ namespace QuizAutoSolver
             if (question.Substring(0, 76) == "Inserisci il primo host valido della rete alla quale appartiene l'indirizzo ")
             {
                 string rimanente = question.Substring(76, question.Length - 76);
-                for (int i = 0; i < rimanente.Length; i++)
+                for (int i = 0; i < rimanente.Length-14; i++)
                 {
-                    try
+                    if (rimanente.Substring(i, 14) == " con maschera ")
                     {
-                        if (rimanente.Substring(i, 14) == " con maschera ")
-                        {
-                            string ip = rimanente.Substring(0, i);
-                            string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
+                        string ip = rimanente.Substring(0, i);
+                        string mask = rimanente.Substring(i + 14, (rimanente.Length - i) - 14);
 
-                            Clipboard.SetText(FirstHost(ip, mask));
-                        }
-                    }
-                    catch
-                    {
-
+                        Clipboard.SetText(FirstHost(ip, mask));
                     }
                 }
             }
@@ -925,7 +751,6 @@ namespace QuizAutoSolver
                     }
                 }
             }
-
         }
 
         protected override void WndProc(ref Message m)
@@ -949,7 +774,14 @@ namespace QuizAutoSolver
                     }
                     catch
                     {
-
+                        if (question == "")
+                        {
+                            MessageBox.Show("Appunti vuoti. copiare qualcosa.", "Avviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Qualcosa è andato storto. Assicurarsi i utilizzare il programma come previsto.", "Eccezione gestita", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
                 else
@@ -1006,7 +838,7 @@ namespace QuizAutoSolver
         {
             if (!cboMainKey.Items.Contains(cboMainKey.Text))
             {
-                cboMainKey.Text = "WinKey";
+                cboMainKey.Text = "Alt";
             }
             Settings.Default.MainKey = cboMainKey.Text;
             Settings.Default.Save();

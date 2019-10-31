@@ -84,10 +84,10 @@
             this.lblWarning.AutoSize = true;
             this.lblWarning.Location = new System.Drawing.Point(6, 74);
             this.lblWarning.Name = "lblWarning";
-            this.lblWarning.Size = new System.Drawing.Size(431, 13);
+            this.lblWarning.Size = new System.Drawing.Size(454, 13);
             this.lblWarning.TabIndex = 4;
-            this.lblWarning.Text = "Attempts to create Hot Keys that conflict with the system or other applications w" +
-    "ill not work";
+            this.lblWarning.Text = "Tentare di creare Hot Keys che fanno conflitto con il sistema o altre applicazion" +
+    "i non funzionerà";
             // 
             // cboSecondKey
             // 
@@ -167,9 +167,9 @@
             this.lblHotKey.AutoSize = true;
             this.lblHotKey.Location = new System.Drawing.Point(6, 13);
             this.lblHotKey.Name = "lblHotKey";
-            this.lblHotKey.Size = new System.Drawing.Size(242, 13);
+            this.lblHotKey.Size = new System.Drawing.Size(313, 13);
             this.lblHotKey.TabIndex = 0;
-            this.lblHotKey.Text = "Imposta la combinazione per identificare il browser";
+            this.lblHotKey.Text = "Imposta la combinazione per identificare o lavorare con il browser";
             // 
             // tabPage1
             // 
@@ -255,19 +255,19 @@
             this.showToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.mnuPopUp.Name = "mnuPopUp";
-            this.mnuPopUp.Size = new System.Drawing.Size(102, 48);
+            this.mnuPopUp.Size = new System.Drawing.Size(104, 48);
             // 
             // showToolStripMenuItem
             // 
             this.showToolStripMenuItem.Name = "showToolStripMenuItem";
-            this.showToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+            this.showToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.showToolStripMenuItem.Text = "Show";
             this.showToolStripMenuItem.Click += new System.EventHandler(this.showToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // frmMain
