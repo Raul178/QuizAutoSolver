@@ -452,7 +452,7 @@ namespace QuizAutoSolver
                     }
                 }
                 else
-                //FATTO MA A VOLTE POTREBBE NON FUNZIONARE
+                //FATTO MA POTREBBE NON FUNZIONARE
                 if (question.Substring(0, 42) == "Inserisci l'ultimo host valido della rete " && question.Length < 87)
                 {
                     string rimanente = question.Substring(42, question.Length - 42);
@@ -564,7 +564,7 @@ namespace QuizAutoSolver
                     }
                 }
                 else
-                //FATTO MA A VOLTE POTREBBE NON FUNZIONARE
+                //FATTO MA POTREBBE NON FUNZIONARE
                 if (question.Substring(0, 71) == "Inserisci l'ultimo host valido della rete alla quale appartiene l'host ")
                 {
                     string rimanente = question.Substring(71, question.Length - 71);
@@ -577,7 +577,7 @@ namespace QuizAutoSolver
                     }
                 }
                 else
-                //FATTO MA A VOLTE POTREBBE NON FUNZIONARE
+                //FATTO MA POTREBBE NON FUNZIONARE
                 if (question.Substring(0, 76) == "Inserisci l'ultimo host valido della rete alla quale appartiene l'indirizzo ")
                 {
                     string rimanente = question.Substring(76, question.Length - 76);
@@ -585,7 +585,7 @@ namespace QuizAutoSolver
                     {
                         if (rimanente[i] == '/')
                         {
-                            string shorthand = rimanente.Substring(i + 1, (rimanente.Length - i) - 2);
+                            string shorthand = rimanente.Substring(i + 1, (rimanente.Length - i) - 1);
                             string ip = rimanente.Substring(0, i);
                             string mask = ToMask(shorthand);
                             Clipboard.SetText(LastHost(ip, mask));
@@ -612,7 +612,7 @@ namespace QuizAutoSolver
 
             }
             else
-            //FATTO MA A VOLTE POTREBBE NON FUNZIONARE
+            //FATTO MA POTREBBE NON FUNZIONARE
             if (question.Substring(0, 76) == "Inserisci l'ultimo host valido della rete alla quale appartiene l'indirizzo " && question.Length < 95)
             {
                 string rimanente = question.Substring(76, question.Length - 76);
@@ -620,7 +620,7 @@ namespace QuizAutoSolver
                 {
                     if (rimanente[i] == '/')
                     {
-                        string shorthand = rimanente.Substring(i + 1, (rimanente.Length - i) - 2);
+                        string shorthand = rimanente.Substring(i + 1, (rimanente.Length - i) - 1);
                         string ip = rimanente.Substring(0, i);
                         string mask = ToMask(shorthand);
                         Clipboard.SetText(LastHost(ip, mask));
@@ -692,7 +692,7 @@ namespace QuizAutoSolver
                 }
             }
             else
-            //FATTO MA A VOLTE POTREBBE NON FUNZIONARE
+            //FATTO MA POTREBBE NON FUNZIONARE
             if (question.Substring(0, 71) == "Inserisci l'ultimo host valido della rete alla quale appartiene l'host ")
             {
                 string rimanente = question.Substring(71, question.Length - 71);
@@ -730,7 +730,7 @@ namespace QuizAutoSolver
                 }
             }
             else
-            //FATTO MA A VOLTE POTREBBE NON FUNZIONARE
+            //FATTO MA POTREBBE NON FUNZIONARE
             if (question.Substring(0, 76) == "Inserisci l'ultimo host valido della rete alla quale appartiene l'indirizzo ")
             {
                 string rimanente = question.Substring(76, question.Length - 76);
@@ -772,7 +772,7 @@ namespace QuizAutoSolver
                     {
                         Reply(question);
                     }
-                    catch
+                    catch (Exception e)
                     {
                         if (question == "")
                         {
@@ -780,7 +780,7 @@ namespace QuizAutoSolver
                         }
                         else
                         {
-                            MessageBox.Show("Qualcosa è andato storto. Assicurarsi i utilizzare il programma come previsto.", "Eccezione gestita", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Qualcosa è andato storto. Assicurarsi i utilizzare il programma come previsto.\n\nDettagli: "+e.Message, "Eccezione gestita", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
@@ -791,11 +791,11 @@ namespace QuizAutoSolver
                     {
                         if (radioButton1.Checked)
                         {
-
+                            int i_max = 6;
                             Thread.Sleep((int)numericUpDown1.Value);
                             SendKeys.SendWait("^s");
                             Thread.Sleep((int)numericUpDown1.Value);
-                            for (int i = 0; i < 6; i++)
+                            for (int i = 0; i < i_max; i++)
                             {
                                 SendKeys.SendWait("{TAB}");
                                 Thread.Sleep(50);
@@ -803,7 +803,7 @@ namespace QuizAutoSolver
                             SendKeys.SendWait("{ENTER}");
                             SendKeys.SendWait(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
                             SendKeys.SendWait("{ENTER}");
-                            for (int i = 0; i < 6; i++)
+                            for (int i = 0; i < i_max; i++)
                             {
                                 SendKeys.SendWait("{TAB}");
                                 Thread.Sleep(50);
